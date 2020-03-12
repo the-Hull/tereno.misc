@@ -1,0 +1,5 @@
+^tereno\.misc\.Rproj$
+^\.Rproj\.user$
+analysis
+^\./R/_setup\.R$
+^LICENSE\.md$

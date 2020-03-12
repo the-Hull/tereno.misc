@@ -1,0 +1,24 @@
+Package: tereno.misc
+Title: TERENO Helper package
+Version: 0.0.0.9000
+Authors@R:
+    person(given = "Alex",
+           family = "Hurley",
+           role = c("aut", "cre"),
+           email = "agl.hurley@gmail.com")
+Description: elper package to download gridded climate data and extract location-specific time-series.
+License: MIT + file LICENSE
+ByteCompile: true
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    bookdown,
+    here,
+    rdwd,
+    data.table,
+    stringr,
+    magrittr,
+    dwdradar
+Suggests: devtools,
+    git2r
+RoxygenNote: 7.1.0
