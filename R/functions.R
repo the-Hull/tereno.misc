@@ -97,7 +97,8 @@ get_time_series <- function(file_paths, lat, lon){
     dwd_data <- rdwd::readDWD(file_paths,
                               quiet = FALSE,
                               raster = TRUE)
-    dwd_data_stack <- rdwd::projectRasterDWD(r = raster::stack(dwd_data),
+    dwd_data_stack <- rdwd::projectRasterDWD(r = raster::stack(dwd_data,
+                                                               quick = TRUE),
                                              proj = "seasonal",
                                              extent = "seasonal")
 

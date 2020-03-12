@@ -40,3 +40,14 @@ precip_time_series <- tereno.misc::get_time_series(file_paths = file_paths,
                                                 lat = 53.331034)
 
 
+## on single files:
+
+list_data <- lapply(file_paths,
+                    function(file){
+                        tereno.misc::get_time_series(file_paths = file,
+                                                     lon = 13.192137,
+                                                     lat = 53.331034)
+})
+
+
+
