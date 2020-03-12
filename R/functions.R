@@ -52,12 +52,14 @@ index_year_mon <- function(index){
 #'
 #' @param index url file paths for download
 #' @param dir_path folder to download files to
+#' @param dl_sleep numeric, sys.sleep for download, so ftp doesn't kick; random number between 0 and \code{dl_sleep} is used.
 #'
 #' @return file paths
 #' @export
 #'
 download_monthly_gridded <- function(index,
-                                     dir_path){
+                                     dir_path,
+                                     dl_sleep = 1){
 
     file_paths <- rdwd::dataDWD(file = index,
                   base=rdwd::gridbase,
@@ -65,7 +67,7 @@ download_monthly_gridded <- function(index,
                   read=FALSE,
                   dir="./analysis/data/raw_data/dwd_gridded/",
                   quiet=FALSE,
-                  sleep = 1,
+                  sleep = dl_sleep,
                   force = TRUE)
 
     return(file_paths)

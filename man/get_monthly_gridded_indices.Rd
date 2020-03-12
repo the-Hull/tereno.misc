@@ -4,10 +4,7 @@
 \alias{get_monthly_gridded_indices}
 \title{Get urls for monthly gridded min and max temp}
 \usage{
-get_monthly_gridded_indices(gridIndex)
-}
-\arguments{
-\item{gridIndex}{character, set index from \code{data("gridIndex", package = "rdwd")}}
+get_monthly_gridded_indices()
 }
 \value{
 urls for file download; function is hard coded for air temp min/max and precip

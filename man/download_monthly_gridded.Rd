@@ -4,12 +4,14 @@
 \alias{download_monthly_gridded}
 \title{Download gridded data based on indices}
 \usage{
-download_monthly_gridded(index, dir_path)
+download_monthly_gridded(index, dir_path, dl_sleep = 1)
 }
 \arguments{
 \item{index}{url file paths for download}
 
 \item{dir_path}{folder to download files to}
+
+\item{dl_sleep}{numeric, sys.sleep for download, so ftp doesn't kick; random number between 0 and \code{dl_sleep} is used.}
 }
 \value{
 file paths
