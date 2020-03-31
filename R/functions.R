@@ -9,15 +9,19 @@ get_monthly_gridded_indices <- function(){
     gridIndex <- rdwd:::gridIndex
 
 
+    index_mean <- grep("grids_germany_monthly_air_temp_mean",   gridIndex, value=TRUE)
     index_max <- grep("grids_germany_monthly_air_temp_max",   gridIndex, value=TRUE)
     index_min <- grep("grids_germany_monthly_air_temp_min",   gridIndex, value=TRUE)
     index_precip <- grep("grids_germany_monthly_precipitation",   gridIndex, value=TRUE)
+    index_evapo_p <- grep("grids_germany_monthly_evapo_p",   gridIndex, value=TRUE)
 
 
 
-    return(list(temp_max = index_max,
+    return(list(temp_mean = index_mean,
+                temp_max = index_max,
                 temp_min = index_min,
-                precip = index_precip))
+                precip = index_precip
+                evapo_p = index_evapo_p))
 
 
 }
