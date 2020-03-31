@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 ./analysis/data/
+*.asc
+*.gz
+*.asc_2
+*.asc_1

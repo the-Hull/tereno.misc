@@ -5,7 +5,8 @@
 #'
 get_monthly_gridded_indices <- function(){
 
-    gridIndex <- getExportedValue(ns = "rdwd", "gridIndex")
+    # gridIndex <- getExportedValue(ns = "rdwd", "gridIndex")
+    gridIndex <- rdwd:::gridIndex
 
 
     index_max <- grep("grids_germany_monthly_air_temp_max",   gridIndex, value=TRUE)
