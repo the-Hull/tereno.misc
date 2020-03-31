@@ -4,7 +4,7 @@
 \alias{get_time_series}
 \title{Time series extraction from gridded data}
 \usage{
-get_time_series(file_paths, lat, lon)
+get_time_series(file_paths, lat, lon, project = TRUE)
 }
 \arguments{
 \item{file_paths}{character, file names for read-in; these are returned from \code{\link{download_monthly_gridded}}.}

@@ -20,7 +20,7 @@ get_monthly_gridded_indices <- function(){
     return(list(temp_mean = index_mean,
                 temp_max = index_max,
                 temp_min = index_min,
-                precip = index_precip
+                precip = index_precip,
                 evapo_p = index_evapo_p))
 
 
@@ -39,15 +39,43 @@ index_year_mon <- function(index){
                                         pattern = "[0-9]{6}")
 
     year <- substr(time_string, 1,4)
-    month <- as.numeric(substr(time_string, 5,7))
+    month <- as.numeric(substr(time_string, 5,6))
 
-    return(cbind(year = year, month_n = month, month_char = month.abb[month]))
+    return(data.frame(year = year,
+                      month_n = month,
+                      month_char = month.abb[month],
+                      stringsAsFactors = FALSE))
     # return(time_string)
 
 
 }
 
 
+#' Get time info from file paths
+#'
+#' @param index character, url paths or file names for rdwd download / read-in
+#'
+#' @return Matrix with time info from input files/urls
+#' @export
+#'
+index_year_mon_day <- function(index){
+
+    time_string <- stringr::str_extract(string = index,
+                                        pattern = "[0-9]{8}")
+
+    year <- substr(time_string, 1,4)
+    month <- as.numeric(substr(time_string, 5,6))
+    day <- as.numeric(substr(time_string, 7,8))
+
+    return(data.frame(year = year,
+                      month_n = month,
+                      month_char = month.abb[month],
+                      day_n = day,
+                      stringsAsFactors = FALSE))
+    # return(time_string)
+
+
+}
 
 
 
@@ -91,23 +119,41 @@ download_monthly_gridded <- function(index,
 #' @param file_paths character, file names for read-in; these are returned from \code{\link{download_monthly_gridded}}.
 #' @param lat numeric, latitude of site
 #' @param lon numeric, longitude of site
+#' @param project logical, should raster be projected or not? Defaults to \code{TRUE}
 #'
 #' @return data.frame with time series for input files and site
 #' @export
 #'
-get_time_series <- function(file_paths, lat, lon){
+get_time_series <- function(file_paths, lat, lon, project = TRUE){
+
+    # Not useful at this stage, might update to allow reading in daily rasters
+    # check if daily or monthly:
+    if(all(grepl(pattern = "daily", x = file_paths))){
+
+        time_info <- index_year_mon_day(file_paths)
+        is_daily <- TRUE
+
+    } else {
+        time_info <- index_year_mon(file_paths)
+
+    }
 
 
-    year_mon <- index_year_mon(file_paths)
+    # year_mon <- index_year_mon(file_paths)
+
 
 
     dwd_data <- rdwd::readDWD(file_paths,
                               quiet = FALSE,
                               raster = TRUE)
-    dwd_data_stack <- rdwd::projectRasterDWD(r = raster::stack(dwd_data,
-                                                               quick = TRUE),
-                                             proj = "seasonal",
-                                             extent = "seasonal")
+
+    if(project){
+
+        dwd_data_stack <- rdwd::projectRasterDWD(r = raster::stack(dwd_data,
+                                                                   quick = TRUE),
+                                                 proj = "seasonal",
+                                                 extent = "seasonal")
+    }
 
 
 
@@ -118,8 +164,8 @@ get_time_series <- function(file_paths, lat, lon){
 
 
 
-    dwd_extracted_with_dates <- data.frame(value = dwd_extracted,
-                                            year_mon)
+    dwd_extracted_with_dates <- cbind(data.frame(value = dwd_extracted),
+                                      time_info)
 
 
     return(dwd_extracted_with_dates)

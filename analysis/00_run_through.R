@@ -1,8 +1,10 @@
 
 # download data --------------------------------------------------------------
 
-
+# using function
 idxs <- tereno.misc::get_monthly_gridded_indices()
+
+
 
 ### MIN TEMP
 
@@ -74,3 +76,78 @@ precip_dt %>%
     geom_point() +
     scale_color_binned(n.breaks = 5)
 
+
+
+
+
+
+
+# new workflow ------------------------------------------------------------
+
+
+
+# using grep
+gridIndex <- rdwd:::gridIndex
+evapo_p_daily <- grep("grids_germany_daily_evapo_p",   gridIndex, value=TRUE)
+
+
+
+## get the the right years / months
+library(dplyr)
+
+year_info <- as.data.frame(tereno.misc::index_year_mon(evapo_p_daily),
+                           stringsAsFactors = FALSE) %>%
+    dplyr::mutate_at(1:2, as.numeric)
+
+
+# year_select <- which(year_info$year > 2005 & year_info$year < 2007)
+year_select <- which(year_info$year > 2005 & year_info$year < 2007 & year_info$month_n == 6)
+
+evapo_p_daily[year_select]
+
+
+file_paths <- tereno.misc::download_monthly_gridded(index = evapo_p_daily[year_select],
+                                                    dir_path = "./analysis/data/raw_data/dwd_gridded/")
+
+
+
+# create folder to store intermediate data,
+
+temporary_dest <- tempdir()
+
+do.call(utils::untar, list(tarfile = file_paths, exdir = temporary_dest))
+
+unzipped_rasters <- list.files(temporary_dest,pattern = ".asc$",
+                               full.names = TRUE)
+
+
+# read raster
+evapo_p_daily_stack <- raster::stack(unzipped_rasters,
+                     quick = TRUE)
+
+# set correct CRS
+raster::crs(evapo_p_daily_stack) <- "+init=epsg:31467"
+
+# for lat lon
+evapo_p_daily_stack <- raster::projectRaster(evapo_p_daily_stack,
+                                             crs = "+init=epsg:4326")
+
+
+
+
+# extract values
+dwd_extracted <- as.numeric(raster::extract(evapo_p_daily_stack,
+                                            data.frame(x = 13.192137,
+                                                       y = 53.331034)))
+dimnames(dwd_extracted) <- NULL
+
+
+
+dwd_extracted_with_dates <- cbind(data.frame(value = dwd_extracted),
+                                  tereno.misc::index_year_mon_day(unzipped_rasters))
+
+
+# this may work somehow if we can figure out the read-in below
+# rdwd::readDWD(file_paths[1], binary = TRUE, exdir = sub(".tgz$", "", file_paths))
+# rdwd::readDWD(file = sub(".tgz$", "", file_paths),
+              # raster = TRUE)
